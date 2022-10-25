@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}
+SnowTricks
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <nav class="navbar navbar-expand-lg mt-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('home') }}">SnowTricks</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-lg-0 justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{{ path('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Tricks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('login') }}">Sign in</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ path('registration') }}">Sign up</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+	<main class="container">
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <h1>Registration</h1>
+            </div>
+            <div class="col-12 text-center d-flex justify-content-center">
+                <form class="form-signin mt-5">
+                    <div class="form-label-group mb-3">
+                        <label class="m-1" for="inputEmail">Username</label>
+                        <input type="text" id="inputEmail" class="form-control" placeholder="Username" required="" autofocus="">
+                    </div>
+                    <div class="form-label-group mb-3">
+                        <label class="m-1" for="inputEmail">Email address</label>
+                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                    </div>
+                    <div class="form-label-group mb-3">
+                        <label class="m-1" for="inputPassword">Password</label>
+                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block mt-4" type="submit">Create an account</button>
+                </form>
+            </div>
+        </div>
+	</main>
+
+    <footer class="container my-5 pt-5 text-muted text-right text-small">
+        <p class="mb-1">Copyright © 2021 SnowTricks</p>
+    </footer>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+@import "_color";
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "light": $light,
+  "danger": $danger,
+  "dark": $dark,
+);
+
+
+@import "~bootstrap/scss/bootstrap";
+
+body{
+  font-family: 'Poppins', sans-serif;
+}
+
+.header-image{
+  background-image: url("https://images.unsplash.com/photo-1512821062947-6eda5253c3e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80");
+  background-position: center;
+  background-size: cover;
+  height: 700px;
+}
+.header-trick{
+  background-position: center;
+  background-size: cover;
+  height: 450px;
+}
+
+.header-block{
+  background-color: #14110687;
+}
+
+.card-cover{
+  background-size: cover;
+  background-position: bottom;
+  height: 250px;
+}
+
+.icon{
+  font-size: 18px;
+}
+
+.link{
+  color: $danger;
+}
+
+.link:hover{
+  color: $dark;
+}
