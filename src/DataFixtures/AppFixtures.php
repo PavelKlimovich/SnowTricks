@@ -56,11 +56,12 @@ class AppFixtures extends Fixture
     {
         $this->tricks = [];
         $faker = Factory::create();
+        $trickList = ["OLLIE","FRONT ROLL","INDY","NOSE GRAB","TAIL PRESS","FRONTSIDE 180","BUTTER","TRIPOD","BACK FLIP","NOLLIE"];
 
         for ($i=0; $i < 10; $i++) { 
             $trick = new Trick();
             $key = array_rand($this->categories);
-            $trick->setName($faker->paragraph($nbSentences = 1, $variableNbSentences = true))
+            $trick->setName($trickList[$i])
                 ->setImage("http://placehold.it/350x150")
                 ->setContent($faker->text($maxNbChars = 200))
                 ->setCategory($this->categories[$key])
