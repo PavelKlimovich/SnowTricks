@@ -14,9 +14,13 @@ class Video
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $url = null;
+
     #[ORM\ManyToOne(inversedBy: 'videos')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Trick $trick = null;
+
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
@@ -24,6 +28,18 @@ class Video
     public function getId(): ?int
     {
         return $this->id;
+    }
+    
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
+
+        return $this;
     }
 
     public function getTrick(): ?Trick
@@ -37,6 +53,7 @@ class Video
 
         return $this;
     }
+
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
