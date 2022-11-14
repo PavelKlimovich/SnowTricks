@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+ <div class="container">
+        <nav class="navbar navbar-expand-lg mt-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('home') }}">Snow|Tricks</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-lg-0 justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Tricks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}">Sign in</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_register') }}">Sign up</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <main class="container">
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <h1>Login</h1>
+            </div>
+            <div class="col-12 text-center d-flex justify-content-center">
+                <form class="form-signin mt-5" method="post">
+                     {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                        </div>
+                    {% endif %}
+                    <div class="form-label-group mb-3">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                    </div>
+                    <div class="form-label-group mb-3">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                    </div>
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Remember me
+                        </label>
+                    </div>
+                    <div class="form-label-group mb-3">
+                         <a class="" href="{{ path('reset_password') }}">Forgot Password ?</a>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" >
+                    <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
+                </form>
+            </div>
+        </div>
+	</main>
+
+    <footer class="container my-5 pt-5 text-muted text-right text-small">
+        <p class="mb-1">Copyright © 2021 SnowTricks</p>
+    </footer>
+
+
+{% endblock %}
