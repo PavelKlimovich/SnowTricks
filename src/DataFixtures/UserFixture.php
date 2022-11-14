@@ -14,7 +14,8 @@ class UserFixture extends Fixture
         $user->setUsername("pklim")
             ->setEmail("pavel@kernl.fr")
             ->setPassword("password")
-            ->setVerified(1)
+            ->setRoles(['ROLE_USER'])
+            ->setIsVerified(1)
             ->setCreatedAt(new \DateTime());
             
         $manager->persist($user);

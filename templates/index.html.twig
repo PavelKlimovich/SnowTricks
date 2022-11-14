@@ -20,12 +20,12 @@ SnowTricks
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Tricks</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_login') }}">Sign in</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_register') }}">Sign up</a>
+                    </li>
                     </li>
                 </ul>
                 </div>
@@ -58,8 +58,10 @@ SnowTricks
                   <h5 class="p-2 pt-3 lh-1 fw-bold"><a href="{{ path('show',{'id':trick.id}) }}" class="text-decoration-none text-secondary" >{{ trick.name }}</a></h5>
                 </li>
                 <li class="d-flex align-items-center mt-1">
-                  <small class="p-3 icon"><a href="#" ><i class="fa-solid fa-pencil"></i></a></small>
-                  <small class="p-1 icon"><a href="#" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                    {% if is_granted('ROLE_USER') %}
+                    <small class="p-3 icon"><a href="#" ><i class="fa-solid fa-pencil"></i></a></small>
+                    <small class="p-1 icon"><a href="#" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                    {% endif %}
                 </li>
               </ul>
         </div>
