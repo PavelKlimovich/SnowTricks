@@ -10,9 +10,16 @@ use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 { 
+    private $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher) {
+        $this->passwordHasher = $passwordHasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
         $this->addUser($manager);
@@ -24,10 +31,13 @@ class AppFixtures extends Fixture
     public function addUser(?ObjectManager $manager): void
     {
         $user = new User();
+        $plaintextPassword = 'password';
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $plaintextPassword);
+
         $user->setUsername("pklim")
             ->setEmail("pavel@kernl.fr")
-            ->setPassword("password")
-            ->setVerified(1)
+            ->setPassword($hashedPassword)
+            ->setIsVerified(1)
             ->setCreatedAt(new \DateTime());
             
         $this->user = $user;
