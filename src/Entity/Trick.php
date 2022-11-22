@@ -19,7 +19,7 @@ class Trick
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column('image')]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::TEXT)]
