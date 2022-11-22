@@ -53,13 +53,15 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             
             $image = $form->get('image')->getData();
-            $fichier = md5(uniqid()).'.'.$image->guessExtension();
-            $image->move(
-                $this->getParameter('images_directory'),
-                $fichier
-            );
-
-           $trick->setName($form->get('name')->getData())
+            if (isset($image)) {
+                $fichier = md5(uniqid()).'.'.$image->guessExtension();
+                $image->move(
+                    $this->getParameter('images_directory'),
+                    $fichier
+                );
+            } 
+            
+            $trick->setName($form->get('name')->getData())
                 ->setImage($fichier)
                 ->setContent($form->get('content')->getData())
                 ->setCategory($form->get('category')->getData())

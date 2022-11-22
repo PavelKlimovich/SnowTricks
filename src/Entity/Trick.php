@@ -19,7 +19,7 @@ class Trick
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column('image')]
+    #[ORM\Column('image', nullable: true)]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -74,7 +74,7 @@ class Trick
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
