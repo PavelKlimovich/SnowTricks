@@ -6,9 +6,21 @@ SnowTricks
 
 {% block body %}
     <header class="mb-auto container mt-3">
-        <div class="p-4 p-md-5 mb-4 rounded text-bg-dark text-center d-flex justify-content-center header-trick">
-            <div class="col-md-8 mt-5">
-                <h1 class="display-4 mt-5">{{ trick.name }}</h1>
+        <div class=" justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}" );'>
+            <div class="d-flex justify-content-end">
+                <div class="col-md-1 mt-2 bg-white text-center p-2">
+                        {% if app.user %}
+                        <div>
+                            <small class="p-3 icon"><a href="{{ path('edit',{'id':trick.id}) }}" ><i class="fa-solid fa-pencil"></i></a></small>
+                            <small class="p-1 icon"><a href="#" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                        </div>
+                        {% endif %}
+                    </div>
+            </div>
+            <div class="row rounded text-center mt-5">
+                <div class="col-md-12 mt-5">
+                    <h1 class="display-4 text-white">{{ trick.name }}</h1>
+                </div>
             </div>
         </div>
     </header>
