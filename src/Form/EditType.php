@@ -28,6 +28,7 @@ class EditType extends AbstractType
                 ]
             ])
             ->add('image', FileType::class, [
+                'mapped' => false,
                 'required' => false,
                 'data_class' => null,
                 'attr' => [

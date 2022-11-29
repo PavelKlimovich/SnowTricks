@@ -32,6 +32,14 @@ SnowTricks
                     <p>{{ trick.content }}</p>
                 </div>
             </div>  
+            {% for comment in comments %}
+                <div class="card m-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Comment</h5>
+                        <p class="card-text">{{ comment.content }}</p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>	
 	</main>
 {% endblock %}

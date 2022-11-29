@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Form\EditType;
+use App\Entity\Comment;
 use App\Services\TrickService;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +21,7 @@ class HomeController extends AbstractController
 {
     private TrickService $trickService;
 
-    public function __construct(TrickService $trickService) {
+    public function __construct(TrickService $trickService, private ManagerRegistry $doctrine) {
         $this->trickService = $trickService;
     }
 
@@ -34,12 +36,17 @@ class HomeController extends AbstractController
     }
 
     #[Route('/trick/{id}', name: 'show')]
-    public function show(TrickRepository $repo, $id): Response
+    public function show(Trick $trick): Response
     {
-        $trick = $repo->find($id);
+        $comments = $trick->getComments();
 
+        //foreach ($comments as $comment) {
+        //    dump($comment);
+        //}
+        //die;
         return $this->render('show.html.twig', [
-            'trick' => $trick
+            'trick' => $trick,
+            'comments' => $comments,
         ]);
     }
 
@@ -55,10 +62,9 @@ class HomeController extends AbstractController
             $image = $form->get('image')->getData();
             if (isset($image)) {
                 $fichier = md5(uniqid()).'.'.$image->guessExtension();
-                $image->move(
-                    $this->getParameter('images_directory'),
-                    $fichier
-                );
+                $image->move($this->getParameter('images_directory'), $fichier);
+            }else{
+                $fichier = $trick->getImage();
             } 
             
             $trick->setName($form->get('name')->getData())
@@ -71,6 +77,7 @@ class HomeController extends AbstractController
            $entityManager->persist($trick);
            $entityManager->flush();
         }
+
         return $this->render('edit.html.twig', [
             'trick' => $trick,
             'EditType' => $form->createView(),
