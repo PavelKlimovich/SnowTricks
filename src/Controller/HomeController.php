@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Trick;
 use App\Form\EditType;
 use App\Entity\Comment;
+use App\Form\CommentFormType;
 use App\Services\TrickService;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,17 +37,27 @@ class HomeController extends AbstractController
     }
 
     #[Route('/trick/{id}', name: 'show')]
-    public function show(Trick $trick): Response
+    public function show(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
     {
         $comments = $trick->getComments();
+        $form = $this->createForm(CommentFormType::class);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment = new Comment();
+            $comment->setContent($form->get('content')->getData())
+                ->setTrick($trick)
+                ->setUser($security->getUser())
+                ->setCreatedAt(new \DateTime());
 
-        //foreach ($comments as $comment) {
-        //    dump($comment);
-        //}
-        //die;
+            $entityManager->persist($comment);
+            $entityManager->flush();
+        }
+
         return $this->render('show.html.twig', [
             'trick' => $trick,
             'comments' => $comments,
+            'CommentFormType' => $form->createView(),
         ]);
     }
 

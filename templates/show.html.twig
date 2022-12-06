@@ -24,14 +24,27 @@ SnowTricks
             </div>
         </div>
     </header>
-
+    
 	<main class="container">
-		<div class="container px-4 py-5" id="custom-cards">
+        <div class="container px-4 py-5" id="custom-cards">
             <div class="row py-5">
                 <div class="col-12">
                     <p>{{ trick.content }}</p>
                 </div>
             </div>  
+  
+            <div class="row">
+                <div class="bd-example-snippet bd-code-snippet">
+                    <div class="bd-example">
+                        <span class="badge rounded-pill bg-dark">{{ trick.category.name }}</span>
+                        <span class="badge rounded-pill bg-dark">{{ trick.createdAt|date('d-m-Y') }}</span>
+                    </div>
+                </div>
+            </div>
+            {{ form_start(CommentFormType) }}
+                {{ form_row(CommentFormType.content) }}
+                <button type="submit" class="btn btn-lg btn-primary btn-block mt-4">Save</button>
+            {{ form_end(CommentFormType) }}
             {% for comment in comments %}
                 <div class="card m-2">
                     <div class="card-body">
@@ -42,4 +55,34 @@ SnowTricks
             {% endfor %}
         </div>	
 	</main>
+
+<script type="text/javascript" >
+
+//    window.onload = () => {
+//    // Gestion des boutons "Supprimer"
+//    let link = document.querySelectorAll("#comment_form_name")
+//    console.log(link);
+//    // On écoute le clic
+//    link.addEventListener("click", function(e){
+//        // On envoie une requête Ajax vers le href du lien avec la méthode DELETE
+//        fetch(this.getAttribute("href"), {
+//            method: "POST",
+//            headers: {
+//                "X-Requested-With": "XMLHttpRequest",
+//                "Content-Type": "application/json"
+//            },
+//            body: JSON.stringify({"_token": this.dataset.token})
+//        }).then(
+//            // On récupère la réponse en JSON
+//            response => response.json()
+//        ).then(data => {
+//            if(data.success)
+//                this.parentElement.remove()
+//            else
+//                alert(data.error)
+//        }).catch(e => alert(e))
+//    })
+    
+//}
+</script>
 {% endblock %}
