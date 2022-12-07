@@ -39,20 +39,21 @@ class HomeController extends AbstractController
     #[Route('/trick/{id}', name: 'show')]
     public function show(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
     {
-        $comments = $trick->getComments();
-        $form = $this->createForm(CommentFormType::class);
+      
+        $newComment = new Comment();
+        $form = $this->createForm(CommentFormType::class, $newComment);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment = new Comment();
-            $comment->setContent($form->get('content')->getData())
+            $newComment->setUser($security->getUser())
                 ->setTrick($trick)
-                ->setUser($security->getUser())
                 ->setCreatedAt(new \DateTime());
 
-            $entityManager->persist($comment);
+            $entityManager->persist($newComment);
             $entityManager->flush();
         }
+
+        $comments = $trick->getComments();
 
         return $this->render('show.html.twig', [
             'trick' => $trick,
