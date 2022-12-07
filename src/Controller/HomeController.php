@@ -63,15 +63,15 @@ class HomeController extends AbstractController
     }
 
     #[Route('/trick/edit/{id}', name: 'edit')]
-    public function edit(Request $request,TrickRepository $repo, $id, EntityManagerInterface $entityManager, Security $security): Response
+    public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
     {
-        $trick = $repo->find($id);
         $form = $this->createForm(EditType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             
             $image = $form->get('image')->getData();
+
             if (isset($image)) {
                 $fichier = md5(uniqid()).'.'.$image->guessExtension();
                 $image->move($this->getParameter('images_directory'), $fichier);
@@ -79,10 +79,7 @@ class HomeController extends AbstractController
                 $fichier = $trick->getImage();
             } 
             
-            $trick->setName($form->get('name')->getData())
-                ->setImage($fichier)
-                ->setContent($form->get('content')->getData())
-                ->setCategory($form->get('category')->getData())
+            $trick->setImage($fichier)
                 ->setUser($security->getUser())
                 ->setCreatedAt(new \DateTime());
                 
