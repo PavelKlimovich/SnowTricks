@@ -1,8 +1,6 @@
 {% extends 'layouts/base.html.twig' %}
 
-{% block title %}
-SnowTricks
-{% endblock %}
+{% block title %}SnowTricks{% endblock %}
 
 {% block body %}
                    
@@ -25,90 +23,126 @@ SnowTricks
 
 	<main class="container">
 		<div class="container px-4 py-5" id="custom-cards">
+            <div class="row" id="images">
+                {% for image in trick.images %}
+                    {% if image.url %}
+                        <div class="col-3 p-2">
+                            <div class="card card-cover overflow-hidden text-bg-dark rounded-4 shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
+                                <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% include 'media/image_list.html.twig' %}
+            </div>
             <div class="row py-5">
                 <div class="col-12">
                     <div class="form-signin mt-5">
                         {{ form_row(EditType.name) }}
                         {{ form_row(EditType.content) }}
                         {{ form_row(EditType.category) }}
-                        </div>
-                        <button type="submit" class="btn btn-lg btn-primary btn-block mt-4">Save</button>
                     </div>
+                    <button type="submit" class="btn btn-lg btn-primary btn-block mt-4">Save</button>
                 </div>
-            </div>  
-        </div>	
+            </div>
+        </div>  
 	</main>
 {{ form_end(EditType) }}
 
-    <script type="text/javascript" >
-        function createThumbnail(sFile) {
-            var oReader = new FileReader();
-            oReader.addEventListener('load', function() {
-                document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
-            }, false);
+<form name="Document" method="post" action enctype="multipart/form-data">
+    <div class="col-md-6">
+        <input type="file" id="documento" name="Document[Ruta]" required="required">
+    </div>
+    <div class="col-md-3">
+        <button type="button" onclick="saveImage()" class="btn btn-success" data-dismiss="modal">Submit</button>
+    </div>
+</form>
 
-            oReader.readAsDataURL(sFile);
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
+<script type="text/javascript" >
+    function createThumbnail(sFile) {
+        var oReader = new FileReader();
+        oReader.addEventListener('load', function() {
+            document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
+        }, false);
 
-        }
+        oReader.readAsDataURL(sFile);
 
-        function changeInputFil(oEvent){
+    }
+
+    function changeInputFil(oEvent){
         
-            var oInputFile = oEvent.currentTarget,
-                sName = oInputFile.name,
-                aFiles = oInputFile.files,
-                aAllowedTypes = ['png', 'jpg', 'jpeg', 'gif'],
-                imgType;  
+        var oInputFile = oEvent.currentTarget,
+            sName = oInputFile.name,
+            aFiles = oInputFile.files,
+            aAllowedTypes = ['png', 'jpg', 'jpeg', 'gif'],
+            imgType;  
 
-            for (var i = 0 ; i < aFiles.length ; i++) {
-                imgType = aFiles[i].name.split('.');
-                imgType = imgType[imgType.length - 1];
+        for (var i = 0 ; i < aFiles.length ; i++) {
+            imgType = aFiles[i].name.split('.');
+            imgType = imgType[imgType.length - 1];
 
-                if(aAllowedTypes.indexOf(imgType) != -1) {
-                    createThumbnail(aFiles[i]);
-                }
+            if(aAllowedTypes.indexOf(imgType) != -1) {
+                createThumbnail(aFiles[i]);
             }
         }
+    }
 
-        document.addEventListener('DOMContentLoaded',function(){
-            var aFileInput = document.forms['edit'].querySelectorAll('[type=file]');
-            for(var k = 0; k < aFileInput.length;k++){
-                aFileInput[k].addEventListener('change', changeInputFil, false);
+    document.addEventListener('DOMContentLoaded',function(){
+        var aFileInput = document.forms['edit'].querySelectorAll('[type=file]');
+        for(var k = 0; k < aFileInput.length;k++){
+            aFileInput[k].addEventListener('change', changeInputFil, false);
+        }
+    });
+
+    window.onload = () => {
+        let links = document.querySelectorAll("[data-delete]")
+
+        for(link of links){
+            link.addEventListener("click", function(e){
+                e.preventDefault()
+
+                if(confirm("Voulez-vous supprimer cette image ?")){
+                    fetch(this.getAttribute("href"), {
+                        method: "DELETE",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({"_token": this.dataset.token})
+                    }).then(
+                        response => response.json()
+                    ).then(data => {
+                        if(data.success)
+                            this.parentElement.remove()
+                        else
+                            alert(data.error)
+                    }).catch(e => alert(e))
+                }
+            })
+        }
+    }
+
+    function saveImage() {
+        var inputFile = document.getElementById('documento');
+        var file = inputFile.files[0];
+        var data = new FormData();
+        data.append('doc', file, file.name);
+        $.ajax({
+            url: "{{ path('fileupload', {'id': trick.id}) }}",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(response) {
+                $("#images").append(response);
+            },
+            error: function(errorThrown){
+                console.log(errorThrown);
             }
         });
 
-        window.onload = () => {
-    // Gestion des boutons "Supprimer"
-    let links = document.querySelectorAll("[data-delete]")
-    
-    // On boucle sur links
-    for(link of links){
-        // On écoute le clic
-        link.addEventListener("click", function(e){
-            // On empêche la navigation
-            e.preventDefault()
-
-            // On demande confirmation
-            if(confirm("Voulez-vous supprimer cette image ?")){
-                // On envoie une requête Ajax vers le href du lien avec la méthode DELETE
-                fetch(this.getAttribute("href"), {
-                    method: "DELETE",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({"_token": this.dataset.token})
-                }).then(
-                    // On récupère la réponse en JSON
-                    response => response.json()
-                ).then(data => {
-                    if(data.success)
-                        this.parentElement.remove()
-                    else
-                        alert(data.error)
-                }).catch(e => alert(e))
-            }
-        })
-    }
 }
 </script>
 
