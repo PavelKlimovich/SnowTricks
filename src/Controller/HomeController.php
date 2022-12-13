@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Image;
 use App\Entity\Trick;
 use App\Form\EditType;
 use App\Entity\Comment;
@@ -30,7 +31,6 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $tricks = $this->trickService->getTricks();
-
         return $this->render('index.html.twig', [
             'tricks' => $tricks
         ]);
@@ -111,5 +111,52 @@ class HomeController extends AbstractController
         }else{
             return new JsonResponse(['error' => 'Token Invalide'], 400);
         }
+    }
+
+    #[Route('/load/trick', name: 'load_tricks')]
+    public function loadTricks(){
+        $tricks = $this->trickService->getTricks();
+        $htmlToRender = $this->renderView('tricks/list.html.twig', array(
+            'tricks' => $tricks
+        ));
+        
+        return new Response($htmlToRender);
+    }
+
+    #[Route('/trick/comments/{id}', name: 'load_comments')]
+    public function loadComments(Trick $trick){
+        $comments = $trick->getComments();
+        $htmlToRender = $this->renderView('comments/list.html.twig', array(
+            'comments' => $comments
+        ));
+        
+        return new Response($htmlToRender);
+    }
+
+
+    #[Route('/fileupload/{id}', name: 'fileupload')]
+    public function fileUpload(Trick $trick, Request $request, EntityManagerInterface $entityManager){
+        $file = $request->files->get('doc');
+        $filename = md5(uniqid()).'.'.$file->guessExtension();
+
+        $request->files->get('doc')->move(
+            $this->getParameter('images_directory'),
+            $filename
+        );
+     
+        $image = new Image();
+        $image->setUrl($filename)
+            ->setTrick($trick)
+            ->setCreatedAt(new \DateTime());
+
+        $entityManager->persist($image);
+        $entityManager->flush();
+
+        $htmlToRender = $this->renderView('media/image_list.html.twig', array(
+            'image' => $image
+        ));
+
+        return new Response($htmlToRender);
+        
     }
 }

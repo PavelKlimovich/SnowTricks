@@ -1,16 +1,14 @@
 {% extends 'layouts/base.html.twig' %}
 
-{% block title %}
-SnowTricks
-{% endblock %}
+{% block title %}SnowTricks{% endblock %}
 
 {% block body %}
 
     <header class="mb-auto">
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center header-image">
             <div class="col-md-5 p-lg-5 mx-auto my-5 header-block">
-                <h1 class="display-1 fw-normal mt-3 text-primary">SNOWTRICKS</h1>
-                <p class="lead fw-normal text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+              	<h1 class="display-1 fw-normal mt-3 text-primary">SNOWTRICKS</h1>
+              	<p class="lead fw-normal text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
             </div>
             <div class="product-device shadow-sm d-none d-md-block"></div>
             <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
@@ -19,28 +17,28 @@ SnowTricks
 
 	<main class="container">
 		<div class="container px-4 py-5" id="custom-cards">
-      <div class="row row-cols-1 row-cols-lg-5 align-items-stretch g-4 py-5">
-      
-      {% for trick in tricks %}
-        <div class="col">
-            <div class="card card-cover overflow-hidden text-bg-dark rounded-4 shadow-lg" style='background-image: url("{{ asset('/uploads/'~trick.image) }}" );'>
-                <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
-            </div>
-              <ul class="d-flex list-unstyled mt-auto">
-                <li class="me-auto">
-                  <h5 class="p-2 pt-3 lh-1 fw-bold"><a href="{{ path('show',{'id':trick.id}) }}" class="text-decoration-none text-secondary" >{{ trick.name }}</a></h5>
-                </li>
-                <li class="d-flex align-items-center mt-1">
-                    {% if is_granted('ROLE_USER') %}
-                        <small class="p-3 icon"><a href="{{ path('edit',{'id':trick.id}) }}" ><i class="fa-solid fa-pencil"></i></a></small>
-                        <small class="p-1 icon"><a href="#" class="link"><i class="fa-solid fa-trash"></i></a></small>
-                    {% endif %}
-                </li>
-              </ul>
-        </div>
-      {% endfor %}
-      
-      </div>  
-    </div>	
+        	<div class="row row-cols-1 row-cols-lg-5 align-items-stretch g-4 py-5" id="tricks">
+          		{% include 'tricks/list.html.twig' %}
+      		</div>
+			  <button onClick="loadMore()" class="btn btn-dark" id="loadMore">Load More</button>  
+    	</div>	
 	</main>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
+<script type="text/javascript" >
+
+function loadMore() {
+	$.ajax({
+		url: "{{ path('load_tricks')}}",
+		type: "GET",
+		contentType: "html",
+        success: function(response) {
+            $("#tricks").append(response);
+        },
+        error: function(errorThrown){
+            console.log(errorThrown);
+        }
+	})
+}
+</script>	
 {% endblock %}
