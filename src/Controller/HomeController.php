@@ -9,6 +9,7 @@ use App\Entity\Comment;
 use App\Form\CommentFormType;
 use App\Services\TrickService;
 use App\Repository\TrickRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,18 +29,17 @@ class HomeController extends AbstractController
     }
 
     #[Route('/', name: 'home')]
-    public function index(): Response
+    public function index(TrickRepository $repo): Response
     {
-        $tricks = $this->trickService->getTricks();
+        $tricks = $repo->getFirstTricks();
         return $this->render('index.html.twig', [
             'tricks' => $tricks
         ]);
     }
 
     #[Route('/trick/{id}', name: 'show')]
-    public function show(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
+    public function show(Request $request, Trick $trick, EntityManagerInterface $entityManager, CommentRepository $repo, Security $security): Response
     {
-      
         $newComment = new Comment();
         $form = $this->createForm(CommentFormType::class, $newComment);
         $form->handleRequest($request);
@@ -53,7 +53,7 @@ class HomeController extends AbstractController
             $entityManager->flush();
         }
 
-        $comments = $trick->getComments();
+        $comments = $repo->getFirstComments($trick->getId());
 
         return $this->render('show.html.twig', [
             'trick' => $trick,
@@ -113,9 +113,9 @@ class HomeController extends AbstractController
         }
     }
 
-    #[Route('/load/trick', name: 'load_tricks')]
-    public function loadTricks(){
-        $tricks = $this->trickService->getTricks();
+    #[Route('/load/trick/{limit}', name: 'load_tricks')]
+    public function loadTricks($limit, TrickRepository $repo){
+        $tricks = $repo->getTricks($limit);
         $htmlToRender = $this->renderView('tricks/list.html.twig', array(
             'tricks' => $tricks
         ));
@@ -123,16 +123,16 @@ class HomeController extends AbstractController
         return new Response($htmlToRender);
     }
 
-    #[Route('/trick/comments/{id}', name: 'load_comments')]
-    public function loadComments(Trick $trick){
-        $comments = $trick->getComments();
+    #[Route('/trick/{id}/comments/{limit}', name: 'load_comments')]
+    public function loadComments($id, $limit, CommentRepository $repo)
+    {
+        $comments = $repo->getComments($id, $limit);
         $htmlToRender = $this->renderView('comments/list.html.twig', array(
             'comments' => $comments
         ));
         
         return new Response($htmlToRender);
     }
-
 
     #[Route('/fileupload/{id}', name: 'fileupload')]
     public function fileUpload(Trick $trick, Request $request, EntityManagerInterface $entityManager){
@@ -157,6 +157,5 @@ class HomeController extends AbstractController
         ));
 
         return new Response($htmlToRender);
-        
     }
 }

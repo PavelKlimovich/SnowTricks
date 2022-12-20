@@ -27,13 +27,22 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
 <script type="text/javascript" >
 
+let count = 5;
+
 function loadMore() {
+	let url = "{{ path('load_tricks',{'limit': 0 })}}";
+
 	$.ajax({
-		url: "{{ path('load_tricks')}}",
+		url: url+count,
 		type: "GET",
 		contentType: "html",
         success: function(response) {
+			count += 5
             $("#tricks").append(response);
+
+			if(response.length == 1){
+				$('#loadMore').hide();
+			}
         },
         error: function(errorThrown){
             console.log(errorThrown);

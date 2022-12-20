@@ -39,28 +39,33 @@ class CommentRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Comment[] Returns an array of Comment objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Trick[] Returns an array of Trick objects
+    */
+    public function getComments($trick, $limit): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c')
+            ->where('c.trick = '.$trick)
+                ->orderBy('c.id', 'ASC')
+                ->setMaxResults($limit)
+                ->setFirstResult(0+$limit) 
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Comment
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Trick[] Returns an array of Trick objects
+    */
+    public function getFirstComments($trick): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c')
+            ->where('c.trick = '.$trick)
+                ->orderBy('c.id', 'ASC')
+                ->setMaxResults(5)
+                ->setFirstResult(0) 
+            ->getQuery()
+            ->getResult();
+    }
 }

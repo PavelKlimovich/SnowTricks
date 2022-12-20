@@ -65,21 +65,27 @@ SnowTricks
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
 <script type="text/javascript" >
+    let count = 5;
 
-function loadMore() {
-   
-	$.ajax({
-		url: "{{ path('load_comments', {'id': trick.id}) }}",
-		type: "GET",
-		contentType: "html",
-        success: function(response) {
-            var htmlToDisplay = response.trim();
-            $("#comments").append(response);
-        },
-        error: function(errorThrown){
-            console.log(errorThrown);
-        }
-	})
-}
+    function loadMore() {
+        let url = "{{ path('load_comments', {'id': trick.id, limit: 0}) }}";
+
+        $.ajax({
+            url: url+count,
+            type: "GET",
+            contentType: "html",
+            success: function(response) {
+                count += 5;
+                $("#comments").append(response);
+
+                if(response.length == 1){
+				    $('#loadMore').hide();
+			    }
+            },
+            error: function(errorThrown){
+                console.log(errorThrown);
+            }
+        })
+    }
 </script>
 {% endblock %}

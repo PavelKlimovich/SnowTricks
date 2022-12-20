@@ -49,19 +49,39 @@ class TrickRepository extends ServiceEntityRepository
         ->select('t.id ')
                 ->andWhere('t.exampleField = :val')
                 ->setParameter('val', $value)
-                    ->orderBy('t.id', 'ASC')
-                    ->setMaxResults(10)
+                ->orderBy('t.id', 'ASC')
+                ->setMaxResults(10)
+                ->setFirstResult(10)
                 ->getQuery()
                 ->getResult();
     }
 
-//    public function findOneBySomeField($value): ?Trick
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Trick[] Returns an array of Trick objects
+    */
+    public function getTricks($limit): array
+    {
+        return $this->createQueryBuilder('t') // select * from tricks as t
+                ->select('t')
+                    ->orderBy('t.id', 'ASC')
+                    ->setMaxResults($limit)
+                    ->setFirstResult(0 + $limit)
+                ->getQuery()
+                ->getResult();
+    }
+
+    /**
+     * @return Trick[] Returns an array of Trick objects
+    */
+    public function getFirstTricks(): array
+    {
+        return $this->createQueryBuilder('t') // select * from tricks as t
+                ->select('t')
+                    ->orderBy('t.id', 'ASC')
+                    ->setMaxResults(5)
+                    ->setFirstResult(0)
+                ->getQuery()
+                ->getResult();
+    }
+
 }
