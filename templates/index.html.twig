@@ -20,7 +20,15 @@
         	<div class="row row-cols-1 row-cols-lg-5 align-items-stretch g-4 py-5" id="tricks">
           		{% include 'tricks/list.html.twig' %}
       		</div>
-			  <button onClick="loadMore()" class="btn btn-dark" id="loadMore">Load More</button>  
+			<div class="text-center">
+				<button onClick="loadMore()" class="btn btn-dark" id="loadMore">Load More</button>  
+				<p id="loaderMessage">No more content</p>
+			</div>
+			<div class="text-center d-flex justify-content-center">
+				<div class="spinner-border" role="status" id="loader">
+				  <span class="sr-only">Loading...</span>
+				</div>
+			</div>
     	</div>	
 	</main>
 
@@ -31,6 +39,8 @@ let count = 5;
 
 function loadMore() {
 	let url = "{{ path('load_tricks',{'limit': 0 })}}";
+	$('#loader').show();
+	$('#loadMore').hide();
 
 	$.ajax({
 		url: url+count,
@@ -39,9 +49,13 @@ function loadMore() {
         success: function(response) {
 			count += 5
             $("#tricks").append(response);
+			$('#loader').hide();
+			$('#loadMore').show();
 
 			if(response.length == 1){
 				$('#loadMore').hide();
+				$('#loader').hide();
+				$('#loaderMessage').show();
 			}
         },
         error: function(errorThrown){

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Entity\Trick;
+use App\Entity\Video;
 use App\Form\EditType;
 use App\Entity\Comment;
 use App\Form\CommentFormType;
@@ -154,6 +155,24 @@ class HomeController extends AbstractController
 
         $htmlToRender = $this->renderView('media/image_list.html.twig', array(
             'image' => $image
+        ));
+
+        return new Response($htmlToRender);
+    }
+
+    #[Route('/videoupload/{id}', name: 'videoupload')]
+    public function videoUpload(Trick $trick, Request $request, EntityManagerInterface $entityManager)
+    {
+        $video = new Video();
+        $video->setUrl($request->get('url'))
+            ->setTrick($trick)
+            ->setCreatedAt(new \DateTime());
+
+        $entityManager->persist($video);
+        $entityManager->flush();
+
+        $htmlToRender = $this->renderView('media/video_list.html.twig', array(
+            'video' => $video
         ));
 
         return new Response($htmlToRender);

@@ -6,13 +6,12 @@
                    
 {{ form_start(EditType) }}
     <header class="mb-auto container mt-3">
-        <div id="immm" class=" justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}" );'>
+        <div class="justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}");'>
             <div class="d-flex justify-content-end">
                 <div class="col-md-1 mt-2 bg-white text-center p-2">
                     {% if app.user %}
                         <div>
-                            {{ form_row(EditType.image) }}
-                            <small class="p-3 icon"><a href="#" ><i class="fa-solid fa-pencil"></i></a></small>
+                            <small class="p-3 icon"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-pencil"></i></a></small>
                             <small class="p-1 icon"><a href="{{ path('annonces_delete_image', {id: trick.id})}}" data-delete data-token="{{ csrf_token('delete' ~ trick.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
                         </div>
                     {% endif %}
@@ -21,20 +20,104 @@
         </div>
     </header>
 
+    <!-- Cover Image Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cover Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_row(EditType.image) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add New Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form name="Document" method="post" action enctype="multipart/form-data">
+                        <div class="col-12">
+                            <input type="file" id="documento" name="Document[Ruta]">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="saveImage()" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div class="modal fade" id="videoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add New Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form name="videoInput" method="post" action>
+                        <div class="col-12">
+                            <input type="text" id="videoInput" name="videoInput" >
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="saveVideo()" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 	<main class="container">
 		<div class="container px-4 py-5" id="custom-cards">
-            <div class="row" id="images">
-                {% for image in trick.images %}
-                    {% if image.url %}
-                        <div class="col-3 p-2">
-                            <div class="card card-cover overflow-hidden text-bg-dark rounded-4 shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
-                                <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-                {% include 'media/image_list.html.twig' %}
+            <div class="row">
+                <div class="col-6">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Add new image</button>
+                    <div class="row" id="images">
+                        {% for image in trick.images %}
+                            {% if image.url %}
+                                <div class="col-6 p-2">
+                                    <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
+                                        <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% include 'media/image_list.html.twig' %}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#videoModal">Add New Video</button>
+                    <div class="row" id="videos">
+                        {% for video in trick.videos %}
+                            {% if video.url %}
+                                <div class="col-6 p-2">
+                                    <iframe width="100%" height="250"  src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% include 'media/video_list.html.twig' %}
+                    </div>
+                </div>
             </div>
+            
             <div class="row py-5">
                 <div class="col-12">
                     <div class="form-signin mt-5">
@@ -47,27 +130,18 @@
             </div>
         </div>  
 	</main>
-{{ form_end(EditType) }}
-
-<form name="Document" method="post" action enctype="multipart/form-data">
-    <div class="col-md-6">
-        <input type="file" id="documento" name="Document[Ruta]" required="required">
-    </div>
-    <div class="col-md-3">
-        <button type="button" onclick="saveImage()" class="btn btn-success" data-dismiss="modal">Submit</button>
-    </div>
-</form>
+    {{ form_end(EditType) }}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
 <script type="text/javascript" >
+
     function createThumbnail(sFile) {
         var oReader = new FileReader();
         oReader.addEventListener('load', function() {
-            document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
+            //document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
         }, false);
 
         oReader.readAsDataURL(sFile);
-
     }
 
     function changeInputFil(oEvent){
@@ -142,8 +216,28 @@
                 console.log(errorThrown);
             }
         });
+    }
 
-}
+    function saveVideo() {
+        var videoInput = document.getElementById('videoInput');
+        var url = videoInput.value;
+        var data = new FormData();
+        data.append('url', url);
+        $.ajax({
+            url: "{{ path('videoupload', {'id': trick.id}) }}",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(response) {
+                $("#videos").append(response);
+            },
+            error: function(errorThrown){
+                console.log(errorThrown);
+            }
+        });
+    }
 </script>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 {% for trick in tricks %}
     <div class="col">
-        <div class="card card-cover overflow-hidden text-bg-dark rounded-4 shadow-lg" style='background-image: url("{{ asset('/uploads/'~trick.image) }}" );'>
+        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~trick.image) }}" );'>
             <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
         </div>
         <ul class="d-flex list-unstyled mt-auto">
