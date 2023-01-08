@@ -4,7 +4,7 @@
 
 {% block body %}
                    
-{{ form_start(EditType) }}
+{{ form_start(TrickEditForm) }}
     <header class="mb-auto container mt-3">
         <div class="justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}");'>
             <div class="d-flex justify-content-end">
@@ -29,7 +29,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{ form_row(EditType.image) }}
+                    {{ form_row(TrickEditForm.image) }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -75,16 +75,16 @@
             <div class="row py-5">
                 <div class="col-12">
                     <div class="form-signin mt-5">
-                        {{ form_row(EditType.name) }}
-                        {{ form_row(EditType.content) }}
-                        {{ form_row(EditType.category) }}
+                        {{ form_row(TrickEditForm.name) }}
+                        {{ form_row(TrickEditForm.content) }}
+                        {{ form_row(TrickEditForm.category) }}
                     </div>
                     <button type="submit" class="btn btn-lg btn-primary btn-block mt-4">Save</button>
                 </div>
             </div>
         </div>  
 	</main>
-    {{ form_end(EditType) }}
+    {{ form_end(TrickEditForm) }}
 
     <!-- Image Modal -->
     <div class="modal fade" id="imageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

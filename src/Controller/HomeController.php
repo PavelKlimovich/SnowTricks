@@ -5,10 +5,11 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\Video;
-use App\Form\EditType;
 use App\Entity\Comment;
-use App\Form\CommentFormType;
+use App\Form\TrickEditForm;
+use App\Form\TrickCreateForm;
 use App\Services\TrickService;
+use App\Form\CommentCreateForm;
 use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,11 +39,44 @@ class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('/trick/create', name: 'create')]
+    public function create(Request $request, EntityManagerInterface $entityManager, Security $security): Response
+    {
+        $trick = new Trick();
+        $form = $this->createForm(TrickCreateForm::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+         
+            $image = $form->get('image')->getData();
+
+            if (isset($image)) {
+                $fichier = md5(uniqid()).'.'.$image->guessExtension();
+                $image->move($this->getParameter('images_directory'), $fichier);
+            }else{
+                $fichier = $trick->getImage();
+            } 
+            
+            $trick->setImage($fichier)
+                ->setUser($security->getUser())
+                ->setCreatedAt(new \DateTime());
+                
+           $entityManager->persist($trick);
+           $entityManager->flush();
+  
+           return $this->redirectToRoute('edit',array('id' => $trick->getId()));
+        }
+
+        return $this->render('create.html.twig', [
+            'TrickForm' => $form->createView(),
+        ]);
+    }
+
     #[Route('/trick/{id}', name: 'show')]
     public function show(Request $request, Trick $trick, EntityManagerInterface $entityManager, CommentRepository $repo, Security $security): Response
     {
         $newComment = new Comment();
-        $form = $this->createForm(CommentFormType::class, $newComment);
+        $form = $this->createForm(CommentCreateForm::class, $newComment);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
@@ -59,14 +93,14 @@ class HomeController extends AbstractController
         return $this->render('show.html.twig', [
             'trick' => $trick,
             'comments' => $comments,
-            'CommentFormType' => $form->createView(),
+            'CommentCreateForm' => $form->createView(),
         ]);
     }
 
     #[Route('/trick/edit/{id}', name: 'edit')]
     public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
     {
-        $form = $this->createForm(EditType::class, $trick);
+        $form = $this->createForm(TrickEditForm::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -90,7 +124,7 @@ class HomeController extends AbstractController
 
         return $this->render('edit.html.twig', [
             'trick' => $trick,
-            'EditType' => $form->createView(),
+            'TrickEditForm' => $form->createView(),
         ]);
     }
 

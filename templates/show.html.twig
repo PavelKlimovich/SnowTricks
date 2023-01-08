@@ -52,16 +52,16 @@ SnowTricks
             </div>
 
             {% if app.user and app.user.isVerified == true %}
-                {{ form_start(CommentFormType) }}
+                {{ form_start(CommentCreateForm) }}
                     <div class="mt-5 row p-4">
                         <div class="col-8">
-                            {{ form_row(CommentFormType.content) }}
+                            {{ form_row(CommentCreateForm.content) }}
                         </div>
                         <div class="col-4">
                             <button type="submit" class="btn btn-lg btn-primary mt-3">Leave a comment</button>
                         </div>
                     </div>
-                {{ form_end(CommentFormType) }}
+                {{ form_end(CommentCreateForm) }}
             {% endif %}
             <div class="row">
                 

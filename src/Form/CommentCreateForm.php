@@ -8,7 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CommentFormType extends AbstractType
+class CommentCreateForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -16,7 +16,7 @@ class CommentFormType extends AbstractType
             'attr' => [
                 'class' => 'form-control'
             ]
-            ]);
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
