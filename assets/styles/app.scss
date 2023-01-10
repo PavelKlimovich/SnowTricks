@@ -50,3 +50,11 @@ body{
 .link:hover{
   color: $dark;
 }
+
+#loader{
+  display: none;
+}
+
+#loaderMessage{
+  display: none;
+}

@@ -1,0 +1,18 @@
+{% for trick in tricks %}
+    <div class="col">
+        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~trick.image) }}" );'>
+            <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
+        </div>
+        <ul class="d-flex list-unstyled mt-auto">
+            <li class="me-auto">
+                <h5 class="p-2 pt-3 lh-1 fw-bold"><a href="{{ path('show',{'id':trick.id}) }}" class="text-decoration-none text-secondary" >{{ trick.name }}</a></h5>
+            </li>
+            <li class="d-flex align-items-center mt-1">
+                {% if is_granted('ROLE_USER') %}
+                    <small class="p-3 icon"><a href="{{ path('edit',{'id':trick.id}) }}" ><i class="fa-solid fa-pencil"></i></a></small>
+                    <small class="p-1 icon"><a href="#" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+{% endfor %}

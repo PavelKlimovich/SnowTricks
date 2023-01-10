@@ -1,0 +1,7 @@
+{% if image is defined %}
+    <div class="col-6 p-2">
+        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
+            <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
+        </div>
+    </div>
+{% endif %} 

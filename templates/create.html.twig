@@ -1,0 +1,95 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}SnowTricks{% endblock %}
+
+{% block body %}
+                   
+{{ form_start(TrickForm) }}
+    <header class="mb-auto container mt-3">
+        <div id="immm" class="justify-content-center text-bg-dark header-trick">
+            <div class="d-flex justify-content-end">
+                <div class="col-md-1 mt-2 bg-white text-center p-2">
+                    <div>
+                        <small class="p-3 icon"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-pencil"></i></a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cover Image Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cover Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_row(TrickForm.image) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+	<main class="container">
+		<div class="container px-4 py-5" id="custom-cards">
+            <div class="row py-5">
+                <div class="col-12">
+                    <div class="form-signin mt-5">
+                        {{ form_row(TrickForm.name) }}
+                        {{ form_row(TrickForm.content) }}
+                        {{ form_row(TrickForm.category) }}
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-primary btn-block mt-4">Save</button>
+                </div>
+            </div>
+        </div>  
+	</main>
+    {{ form_end(TrickForm) }}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
+<script type="text/javascript" >
+
+    function createThumbnail(sFile) {
+        var oReader = new FileReader();
+        oReader.addEventListener('load', function() {
+            document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
+        }, false);
+
+        oReader.readAsDataURL(sFile);
+    }
+
+    function changeInputFil(oEvent){
+        
+        var oInputFile = oEvent.currentTarget,
+            sName = oInputFile.name,
+            aFiles = oInputFile.files,
+            aAllowedTypes = ['png', 'jpg', 'jpeg', 'gif'],
+            imgType;  
+
+        for (var i = 0 ; i < aFiles.length ; i++) {
+            imgType = aFiles[i].name.split('.');
+            imgType = imgType[imgType.length - 1];
+
+            if(aAllowedTypes.indexOf(imgType) != -1) {
+                createThumbnail(aFiles[i]);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded',function(){
+        console.log(document.forms['trick_create_form']);
+        var aFileInput = document.forms['trick_create_form'].querySelectorAll('[type=file]');
+        for(var k = 0; k < aFileInput.length;k++){
+            aFileInput[k].addEventListener('change', changeInputFil, false);
+        }
+    });
+
+</script>
+
+{% endblock %}

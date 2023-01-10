@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Security\EmailVerifier;
-use App\Form\RegistrationFormType;
+use App\Form\RegistrationForm;
 use App\Repository\UserRepository;
 use App\Security\UserAuthenticator;
 use Symfony\Component\Mime\Address;
@@ -33,7 +33,7 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationForm::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
