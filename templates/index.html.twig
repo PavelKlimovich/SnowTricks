@@ -1,0 +1,67 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}SnowTricks{% endblock %}
+
+{% block body %}
+
+    <header class="mb-auto">
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center header-image">
+            <div class="col-md-5 p-lg-5 mx-auto my-5 header-block">
+              	<h1 class="display-1 fw-normal mt-3 text-primary">SNOWTRICKS</h1>
+              	<p class="lead fw-normal text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            </div>
+            <div class="product-device shadow-sm d-none d-md-block"></div>
+            <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+        </div>
+    </header>
+
+	<main class="container">
+		<div class="container px-4 py-5" id="custom-cards">
+        	<div class="row row-cols-1 row-cols-lg-5 align-items-stretch g-4 py-5" id="tricks">
+          		{% include 'tricks/list.html.twig' %}
+      		</div>
+			<div class="text-center">
+				<button onClick="loadMore()" class="btn btn-dark" id="loadMore">Load More</button>  
+				<p id="loaderMessage">No more content</p>
+			</div>
+			<div class="text-center d-flex justify-content-center">
+				<div class="spinner-border" role="status" id="loader">
+				  <span class="sr-only">Loading...</span>
+				</div>
+			</div>
+    	</div>	
+	</main>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
+<script type="text/javascript" >
+
+let count = 5;
+
+function loadMore() {
+	let url = "{{ path('load_tricks',{'limit': 0 })}}";
+	$('#loader').show();
+	$('#loadMore').hide();
+
+	$.ajax({
+		url: url+count,
+		type: "GET",
+		contentType: "html",
+        success: function(response) {
+			count += 5
+            $("#tricks").append(response);
+			$('#loader').hide();
+			$('#loadMore').show();
+
+			if(response.length == 1){
+				$('#loadMore').hide();
+				$('#loader').hide();
+				$('#loaderMessage').show();
+			}
+        },
+        error: function(errorThrown){
+            console.log(errorThrown);
+        }
+	})
+}
+</script>	
+{% endblock %}
