@@ -1,4 +1,5 @@
 # SnowTricks
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/704cc132ce7d4daba3137710502bc62f)](https://www.codacy.com/gh/PavelKlimovich/SnowTricks/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PavelKlimovich/SnowTricks&amp;utm_campaign=Badge_Grade)
 
 ## Installation
 
