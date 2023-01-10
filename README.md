@@ -1,5 +1,7 @@
 # SnowTricks
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9e70fb44a25c416f8fd45c4b1f815bd6)](https://app.codacy.com/gh/PavelKlimovich/SnowTricks?utm_source=github.com&utm_medium=referral&utm_content=PavelKlimovich/SnowTricks&utm_campaign=Badge_Grade_Settings)
+
 ## Installation
 
 1. Configurez vos variables d'environnement tel que la connexion à la base de données ou votre serveur SMTP ou adresse mail dans le fichier `.env.local` qui devra être crée à la racine du projet en réalisant une copie du fichier `.env`.
