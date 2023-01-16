@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Image;
 use App\Entity\Trick;
-use App\Entity\Video;
 use App\Entity\Comment;
 use App\Form\TrickEditForm;
 use App\Form\TrickCreateForm;
@@ -12,6 +10,7 @@ use App\Services\TrickService;
 use App\Form\CommentCreateForm;
 use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
+use App\Services\HelperStringService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,21 +18,22 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class HomeController extends AbstractController
+class TrickController extends AbstractController
 {
     private TrickService $trickService;
 
-    public function __construct(TrickService $trickService, private ManagerRegistry $doctrine) {
+    public function __construct(TrickService $trickService, private ManagerRegistry $doctrine) 
+    {
         $this->trickService = $trickService;
     }
 
-    #[Route('/', name: 'home')]
+    #[Route('/', name: 'index')]
     public function index(TrickRepository $repo): Response
     {
         $tricks = $repo->getFirstTricks();
+
         return $this->render('index.html.twig', [
             'tricks' => $tricks
         ]);
@@ -59,12 +59,14 @@ class HomeController extends AbstractController
             
             $trick->setImage($fichier)
                 ->setUser($security->getUser())
+                ->setSlug(HelperStringService::slugify($trick->getName()))
                 ->setCreatedAt(new \DateTime());
                 
            $entityManager->persist($trick);
            $entityManager->flush();
-  
-           return $this->redirectToRoute('edit',array('id' => $trick->getId()));
+           $this->addFlash('success', 'Trick Created !');
+
+           return $this->redirectToRoute('edit',array('slug' => $trick->getSlug()));
         }
 
         return $this->render('create.html.twig', [
@@ -72,7 +74,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/trick/{id}', name: 'show')]
+    #[Route('/trick/{slug}', name: 'show')]
     public function show(Request $request, Trick $trick, EntityManagerInterface $entityManager, CommentRepository $repo, Security $security): Response
     {
         $newComment = new Comment();
@@ -97,7 +99,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/trick/edit/{id}', name: 'edit')]
+    #[Route('/trick/edit/{slug}', name: 'edit')]
     public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
     {
         $form = $this->createForm(TrickEditForm::class, $trick);
@@ -128,24 +130,14 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/supprime/image/{id}', name: 'annonces_delete_image', methods: "DELETE")]
-    public function deleteImage(Trick $trick, Request $request, EntityManagerInterface $entityManager){
-        $data = json_decode($request->getContent(), true);
+    #[Route('/delete/trick/{id}', name: 'delete')]
+    public function deleteImage(Trick $trick, EntityManagerInterface $entityManager)
+    {
+        $entityManager->remove($trick);
+        $entityManager->flush();
+        $this->addFlash('success', 'Trick Deleted !');
 
-        if($this->isCsrfTokenValid('delete'.$trick->getId(), $data['_token'])){
-            $nom = $trick->getImage();
-            unlink($this->getParameter('images_directory').'/'.$nom);
-
-            // On supprime l'entrée de la base
-            //$trick->setImage('http://placehold.it/350x150');      
-            //$entityManager->persist($trick);
-            //$entityManager->flush();
-
-            // On répond en json
-            return new JsonResponse(['success' => 1]);
-        }else{
-            return new JsonResponse(['error' => 'Token Invalide'], 400);
-        }
+        return $this->redirectToRoute('index');
     }
 
     #[Route('/load/trick/{limit}', name: 'load_tricks')]
@@ -155,60 +147,6 @@ class HomeController extends AbstractController
             'tricks' => $tricks
         ));
         
-        return new Response($htmlToRender);
-    }
-
-    #[Route('/trick/{id}/comments/{limit}', name: 'load_comments')]
-    public function loadComments($id, $limit, CommentRepository $repo)
-    {
-        $comments = $repo->getComments($id, $limit);
-        $htmlToRender = $this->renderView('comments/list.html.twig', array(
-            'comments' => $comments
-        ));
-        
-        return new Response($htmlToRender);
-    }
-
-    #[Route('/fileupload/{id}', name: 'fileupload')]
-    public function fileUpload(Trick $trick, Request $request, EntityManagerInterface $entityManager){
-        $file = $request->files->get('doc');
-        $filename = md5(uniqid()).'.'.$file->guessExtension();
-
-        $request->files->get('doc')->move(
-            $this->getParameter('images_directory'),
-            $filename
-        );
-     
-        $image = new Image();
-        $image->setUrl($filename)
-            ->setTrick($trick)
-            ->setCreatedAt(new \DateTime());
-
-        $entityManager->persist($image);
-        $entityManager->flush();
-
-        $htmlToRender = $this->renderView('media/image_list.html.twig', array(
-            'image' => $image
-        ));
-
-        return new Response($htmlToRender);
-    }
-
-    #[Route('/videoupload/{id}', name: 'videoupload')]
-    public function videoUpload(Trick $trick, Request $request, EntityManagerInterface $entityManager)
-    {
-        $video = new Video();
-        $video->setUrl($request->get('url'))
-            ->setTrick($trick)
-            ->setCreatedAt(new \DateTime());
-
-        $entityManager->persist($video);
-        $entityManager->flush();
-
-        $htmlToRender = $this->renderView('media/video_list.html.twig', array(
-            'video' => $video
-        ));
-
         return new Response($htmlToRender);
     }
 }

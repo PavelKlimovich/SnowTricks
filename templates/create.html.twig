@@ -3,6 +3,12 @@
 {% block title %}SnowTricks{% endblock %}
 
 {% block body %}
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
                    
 {{ form_start(TrickForm) }}
     <header class="mb-auto container mt-3">

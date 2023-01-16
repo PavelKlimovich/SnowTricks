@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\TrickRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TrickRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 class Trick
@@ -24,6 +27,9 @@ class Trick
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $slug = null;
 
     #[ORM\ManyToOne(inversedBy: 'tricks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -89,6 +95,18 @@ class Trick
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -217,5 +235,14 @@ class Trick
         }
 
         return $this;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => ['name'],
+            'errorPath' => 'name',
+            'message' => 'This trick is already in use on that name.',
+        ]));
     }
 }
