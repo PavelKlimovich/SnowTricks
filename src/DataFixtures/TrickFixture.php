@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Trick;
+use App\Services\HelperStringService;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -21,6 +22,7 @@ class TrickFixture extends Fixture implements DependentFixtureInterface
             $trick->setName($trickList[$i])
                 ->setImage("http://placehold.it/350x150")
                 ->setContent($faker->text($maxNbChars = 200))
+                ->setSlug(HelperStringService::slugify($trickList[$i]))
                 ->setCategory($this->getReference('cat'.$i))
                 ->setUser($this->getReference('user'))
                 ->setCreatedAt(new \DateTime());
@@ -30,7 +32,6 @@ class TrickFixture extends Fixture implements DependentFixtureInterface
 
             $this->addReference('trick'.$i, $trick);
         }
-        
     }
 
     public function getDependencies()

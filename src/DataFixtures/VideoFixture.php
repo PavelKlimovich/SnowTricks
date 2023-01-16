@@ -13,7 +13,7 @@ class VideoFixture extends Fixture implements DependentFixtureInterface
     {
         for ($i=0; $i < 10; $i++) {
             $video = new Video();
-            $video->setUrl("https://www.youtube.com/watch?v=V9xuy-rVj9w")
+            $video->setUrl("https://www.youtube.com/embed/8KotvBY28Mo")
                 ->setTrick($this->getReference('trick'.$i))
                 ->setCreatedAt(new \DateTime());
 

@@ -37,9 +37,8 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData())
-            );
+            $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
+            $user->setImage('uploads/profils/'.random_int(2, 9).'.jpg');
             $user->setCreatedAt(new \DateTime());
             
             $entityManager->persist($user);
@@ -74,13 +73,13 @@ class RegistrationController extends AbstractController
         $id = $request->get('id');
 
         if (null === $id) {
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('index');
         }
 
         $user = $userRepository->find($id);
 
         if (null === $user) {
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('index');
         }
 
         try {
@@ -88,11 +87,23 @@ class RegistrationController extends AbstractController
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('index');
         }
 
         $this->addFlash('success', 'Your email address has been verified.');
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('index');
+    }
+
+    #[Route('/forgot_password', name: 'forgot_password')]
+    public function forgotPassword(): Response
+    {
+        return $this->render('registration/forgot_password.html.twig');
+    }
+
+    #[Route('/reset_password', name: 'reset_password')]
+    public function resetPassword(): Response
+    {
+        return $this->render('registration/reset_password.html.twig');
     }
 }

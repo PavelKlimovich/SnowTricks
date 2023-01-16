@@ -3,16 +3,22 @@
 {% block title %}SnowTricks{% endblock %}
 
 {% block body %}
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
                    
 {{ form_start(TrickEditForm) }}
     <header class="mb-auto container mt-3">
-        <div class="justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}");'>
+        <div id="immm" class="justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}");'>
             <div class="d-flex justify-content-end">
                 <div class="col-md-1 mt-2 bg-white text-center p-2">
                     {% if app.user %}
                         <div>
-                            <small class="p-3 icon"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-pencil"></i></a></small>
-                            <small class="p-1 icon"><a href="{{ path('annonces_delete_image', {id: trick.id})}}" data-delete data-token="{{ csrf_token('delete' ~ trick.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                            <small class="p-3 icon"><a href="" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-pencil"></i></a></small>
+                            <small class="p-1 icon"><a href="{{ path('delete', {id: trick.id})}}" data-delete data-token="{{ csrf_token('delete' ~ trick.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
                         </div>
                     {% endif %}
                 </div>
@@ -137,14 +143,13 @@
     function createThumbnail(sFile) {
         var oReader = new FileReader();
         oReader.addEventListener('load', function() {
-            //document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
+            document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
         }, false);
 
         oReader.readAsDataURL(sFile);
     }
 
     function changeInputFil(oEvent){
-        
         var oInputFile = oEvent.currentTarget,
             sName = oInputFile.name,
             aFiles = oInputFile.files,
@@ -167,34 +172,6 @@
             aFileInput[k].addEventListener('change', changeInputFil, false);
         }
     });
-
-    window.onload = () => {
-        let links = document.querySelectorAll("[data-delete]")
-
-        for(link of links){
-            link.addEventListener("click", function(e){
-                e.preventDefault()
-
-                if(confirm("Voulez-vous supprimer cette image ?")){
-                    fetch(this.getAttribute("href"), {
-                        method: "DELETE",
-                        headers: {
-                            "X-Requested-With": "XMLHttpRequest",
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({"_token": this.dataset.token})
-                    }).then(
-                        response => response.json()
-                    ).then(data => {
-                        if(data.success)
-                            this.parentElement.remove()
-                        else
-                            alert(data.error)
-                    }).catch(e => alert(e))
-                }
-            })
-        }
-    }
 
     function saveImage() {
         var inputFile = document.getElementById('documento');

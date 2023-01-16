@@ -45,7 +45,7 @@ class CommentRepository extends ServiceEntityRepository
     public function getComments($trick, $limit): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c')
+            ->select('c')   
             ->where('c.trick = '.$trick)
                 ->orderBy('c.id', 'ASC')
                 ->setMaxResults($limit)
@@ -60,7 +60,7 @@ class CommentRepository extends ServiceEntityRepository
     public function getFirstComments($trick): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c')
+            ->select('c')  
             ->where('c.trick = '.$trick)
                 ->orderBy('c.id', 'ASC')
                 ->setMaxResults(5)
