@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Entity\Comment;
+use App\Form\ImageEditForm;
 use App\Form\TrickEditForm;
+use App\Form\VideoEditForm;
 use App\Form\TrickCreateForm;
 use App\Services\TrickService;
 use App\Form\CommentCreateForm;
@@ -103,6 +105,14 @@ class TrickController extends AbstractController
     public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
     {
         $form = $this->createForm(TrickEditForm::class, $trick);
+        $imageForm = $this->createForm(ImageEditForm::class, null, [
+            'action' => $this->generateUrl('image_update'),
+            'method' => 'POST',
+        ]);
+        $videoForm = $this->createForm(VideoEditForm::class, null, [
+            'action' => $this->generateUrl('video_update'),
+            'method' => 'POST',
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -127,6 +137,8 @@ class TrickController extends AbstractController
         return $this->render('edit.html.twig', [
             'trick' => $trick,
             'TrickEditForm' => $form->createView(),
+            'ImageEditForm' => $imageForm->createView(),
+            'VideoEditForm' => $videoForm->createView(),
         ]);
     }
 
