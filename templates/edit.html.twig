@@ -57,6 +57,10 @@
                                     <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
                                         <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
                                     </div>
+                                    <div class="text-end m-2">
+                                        <small class="p-3 icon"><a href="" onclick="addImageId('{{ image.id }}','{{ trick.id }}')" data-bs-toggle="modal" data-bs-target="#imageUploadModal"><i class="fa-solid fa-pencil"></i></a></small>
+                                        <small class="p-1 icon"><a href="{{ path('image_delete', {image: image.id})}}" data-delete data-token="{{ csrf_token('delete' ~ image.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                                    </div>
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -70,6 +74,10 @@
                             {% if video.url %}
                                 <div class="col-6 p-2">
                                     <iframe width="100%" height="250"  src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    <div class="text-end">
+                                        <small class="p-3 icon"><a href="" onclick="addVideoId('{{ video.id }}','{{ trick.id }}')"  data-bs-toggle="modal" data-bs-target="#videoUploadModal"><i class="fa-solid fa-pencil"></i></a></small>
+                                        <small class="p-1 icon"><a href="{{ path('video_delete', {video: video.id})}}" data-delete data-token="{{ csrf_token('delete' ~ video.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                                    </div>
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -114,6 +122,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Update Modal -->
+    <div class="modal fade" id="imageUploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Update Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{ form_start(ImageEditForm) }}
+                <div class="modal-body">
+                    <div class="col-12">
+                        {{ form_row(ImageEditForm.image) }}
+                        {{ form_row(ImageEditForm.hidden) }}
+                        {{ form_row(ImageEditForm.trick_id) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                </div>
+                {{ form_end(ImageEditForm) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Update Modal -->
+    <div class="modal fade" id="videoUploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Update Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{ form_start(VideoEditForm) }}
+                <div class="modal-body">
+                    <div class="col-12">
+                        {{ form_row(VideoEditForm.url) }}
+                        {{ form_row(VideoEditForm.video_id) }}
+                        {{ form_row(VideoEditForm.trick_id) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                </div>
+                {{ form_end(VideoEditForm) }}
+            </div>
+        </div>
+    </div>
     
     <!-- Video Modal -->
     <div class="modal fade" id="videoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -126,7 +184,8 @@
                 <div class="modal-body">
                     <form name="videoInput" method="post" action>
                         <div class="col-12">
-                            <input type="text" id="videoInput" name="videoInput" >
+                            <label for="">Link embed </label>
+                            <input type="text" id="videoInput" name="videoInput" placeholder="youtube.com/embed/...">
                         </div>
                     </form>
                 </div>
@@ -172,6 +231,16 @@
             aFileInput[k].addEventListener('change', changeInputFil, false);
         }
     });
+
+    function addImageId(image_id, trick_id) {
+        document.getElementById('image_edit_form_hidden').value = image_id;
+        document.getElementById('image_edit_form_trick_id').value = trick_id;
+    }
+
+    function addVideoId(video_id, trick_id) {
+        document.getElementById('video_edit_form_video_id').value = video_id;
+        document.getElementById('video_edit_form_trick_id').value = trick_id;
+    }
 
     function saveImage() {
         var inputFile = document.getElementById('documento');
