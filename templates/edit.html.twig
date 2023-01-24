@@ -48,12 +48,12 @@
 	<main class="container">
 		<div class="container px-4 py-5" id="custom-cards">
             <div class="row">
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Add new image</button>
                     <div class="row" id="images">
                         {% for image in trick.images %}
                             {% if image.url %}
-                                <div class="col-6 p-2">
+                                <div class="col-12 col-md-6 p-2">
                                     <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
                                         <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
                                     </div>
@@ -67,12 +67,12 @@
                         {% include 'media/image_list.html.twig' %}
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#videoModal">Add New Video</button>
                     <div class="row" id="videos">
                         {% for video in trick.videos %}
                             {% if video.url %}
-                                <div class="col-6 p-2">
+                                <div class="col-12 col-md-6 p-2">
                                     <iframe width="100%" height="250"  src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                     <div class="text-end">
                                         <small class="p-3 icon"><a href="" onclick="addVideoId('{{ video.id }}','{{ trick.id }}')"  data-bs-toggle="modal" data-bs-target="#videoUploadModal"><i class="fa-solid fa-pencil"></i></a></small>

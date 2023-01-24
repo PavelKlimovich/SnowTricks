@@ -32,14 +32,30 @@
     
 	<main class="container">
         <div class="container px-4 py-5" id="custom-cards">
-            <div class="row" id="images">
-                {% for image in trick.images %}
-                    <div class="col-3 p-2">
-                        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
-                            <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
-                        </div>
+            <button class="btn btn-primary" id="media-btn" onclick="showMedias()">See medias</button>
+            <div class="row" id="media-content">
+                <div class="col-12 col-md-6">
+                    <div class="row" id="images">
+                        {% for image in trick.images %}
+                            <div class="col-12 col-md-6 p-2">
+                                <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
+                                    <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="row">
+                        {% for video in trick.videos %}
+                            {% if video.url %}
+                                <div class="col-12 col-md-6 p-2">
+                                    <iframe width="100%" height="250" src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
             <div class="row py-5">
                 <div class="col-12">
@@ -59,10 +75,10 @@
             {% if app.user and app.user.isVerified == true %}
                 {{ form_start(CommentCreateForm) }}
                     <div class="mt-5 row p-4">
-                        <div class="col-8">
+                        <div class="col-12 col-md-8">
                             {{ form_row(CommentCreateForm.content) }}
                         </div>
-                        <div class="col-4">
+                        <div class="col-12 col-md-4">
                             <button type="submit" class="btn btn-lg btn-primary mt-3">Leave a comment</button>
                         </div>
                     </div>
@@ -105,7 +121,7 @@
                 $('#loader').hide();
 			    $('#loadMore').show();
 
-                if(response.length == 1){
+                if(response.length <= 1){
 				    $('#loadMore').hide();
                     $('#loader').hide();
                     $('#loaderMessage').show();
@@ -116,5 +132,11 @@
             }
         })
     }
+
+    function showMedias(){
+        $('#media-content').show();
+        $('#media-btn').hide();
+    }
+
 </script>
 {% endblock %}
