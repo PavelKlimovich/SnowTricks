@@ -4,7 +4,7 @@ namespace App\Services;
 
 class HelperStringService
 {
-    public static function slugify(string $text, string $divider = '-'): string
+    public static function slugify(string $text, string $divider = '_'): string
     {
         $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
         $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
