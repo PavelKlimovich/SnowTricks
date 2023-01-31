@@ -4,11 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Entity\Comment;
-use App\Form\ImageEditForm;
-use App\Form\TrickEditForm;
-use App\Form\VideoEditForm;
-use App\Form\TrickCreateForm;
-use App\Form\CommentCreateForm;
+use App\Form\ImageTypeForm;
+use App\Form\TrickTypeForm;
+use App\Form\VideoTypeForm;
+use App\Form\CommentTypeForm;
 use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
 use App\Services\HelperStringService;
@@ -42,7 +41,7 @@ class TrickController extends AbstractController
     public function create(Request $request, Security $security): Response
     {
         $trick = new Trick();
-        $form = $this->createForm(TrickCreateForm::class, $trick);
+        $form = $this->createForm(TrickTypeForm::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -77,7 +76,7 @@ class TrickController extends AbstractController
     public function show(Request $request, Trick $trick, CommentRepository $repo, Security $security): Response
     {
         $newComment = new Comment();
-        $form = $this->createForm(CommentCreateForm::class, $newComment);
+        $form = $this->createForm(CommentTypeForm::class, $newComment);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
@@ -94,19 +93,19 @@ class TrickController extends AbstractController
         return $this->render('show.html.twig', [
             'trick' => $trick,
             'comments' => $comments,
-            'CommentCreateForm' => $form->createView(),
+            'CommentTypeForm' => $form->createView(),
         ]);
     }
 
     #[Route('/trick/edit/{slug}', name: 'edit')]
     public function edit(Request $request, Trick $trick, Security $security): Response
     {
-        $form = $this->createForm(TrickEditForm::class, $trick);
-        $imageForm = $this->createForm(ImageEditForm::class, null, [
+        $form = $this->createForm(TrickTypeForm::class, $trick);
+        $imageForm = $this->createForm(ImageTypeForm::class, null, [
             'action' => $this->generateUrl('image_update'),
             'method' => 'POST',
         ]);
-        $videoForm = $this->createForm(VideoEditForm::class, null, [
+        $videoForm = $this->createForm(VideoTypeForm::class, null, [
             'action' => $this->generateUrl('video_update'),
             'method' => 'POST',
         ]);
@@ -129,12 +128,13 @@ class TrickController extends AbstractController
            $this->entityManager->persist($trick);
            $this->entityManager->flush();
         }
+        $this->addFlash('success', 'Trick Modified !');
 
         return $this->render('edit.html.twig', [
             'trick' => $trick,
-            'TrickEditForm' => $form->createView(),
-            'ImageEditForm' => $imageForm->createView(),
-            'VideoEditForm' => $videoForm->createView(),
+            'TrickTypeForm' => $form->createView(),
+            'ImageTypeForm' => $imageForm->createView(),
+            'VideoTypeForm' => $videoForm->createView(),
         ]);
     }
 

@@ -10,7 +10,7 @@
     </div>
 {% endfor %}
                    
-{{ form_start(TrickEditForm) }}
+{{ form_start(TrickTypeForm) }}
     <header class="mb-auto container mt-3">
         <div id="immm" class="justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}");'>
             <div class="d-flex justify-content-end">
@@ -35,7 +35,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{ form_row(TrickEditForm.image) }}
+                    {{ form_row(TrickTypeForm.image) }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -89,16 +89,16 @@
             <div class="row py-5">
                 <div class="col-12">
                     <div class="form-signin mt-5">
-                        {{ form_row(TrickEditForm.name) }}
-                        {{ form_row(TrickEditForm.content) }}
-                        {{ form_row(TrickEditForm.category) }}
+                        {{ form_row(TrickTypeForm.name) }}
+                        {{ form_row(TrickTypeForm.content) }}
+                        {{ form_row(TrickTypeForm.category) }}
                     </div>
                     <button type="submit" class="btn btn-lg btn-primary btn-block mt-4">Save</button>
                 </div>
             </div>
         </div>  
 	</main>
-    {{ form_end(TrickEditForm) }}
+    {{ form_end(TrickTypeForm) }}
 
     <!-- Image Modal -->
     <div class="modal fade" id="imageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -131,19 +131,19 @@
                     <h5 class="modal-title" id="staticBackdropLabel">Update Image</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {{ form_start(ImageEditForm) }}
+                {{ form_start(ImageTypeForm) }}
                 <div class="modal-body">
                     <div class="col-12">
-                        {{ form_row(ImageEditForm.image) }}
-                        {{ form_row(ImageEditForm.hidden) }}
-                        {{ form_row(ImageEditForm.trick_id) }}
+                        {{ form_row(ImageTypeForm.image) }}
+                        {{ form_row(ImageTypeForm.hidden) }}
+                        {{ form_row(ImageTypeForm.trick_id) }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
                 </div>
-                {{ form_end(ImageEditForm) }}
+                {{ form_end(ImageTypeForm) }}
             </div>
         </div>
     </div>
@@ -156,19 +156,19 @@
                     <h5 class="modal-title" id="staticBackdropLabel">Update Video</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {{ form_start(VideoEditForm) }}
+                {{ form_start(VideoTypeForm) }}
                 <div class="modal-body">
                     <div class="col-12">
-                        {{ form_row(VideoEditForm.url) }}
-                        {{ form_row(VideoEditForm.video_id) }}
-                        {{ form_row(VideoEditForm.trick_id) }}
+                        {{ form_row(VideoTypeForm.url) }}
+                        {{ form_row(VideoTypeForm.video_id) }}
+                        {{ form_row(VideoTypeForm.trick_id) }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
                 </div>
-                {{ form_end(VideoEditForm) }}
+                {{ form_end(VideoTypeForm) }}
             </div>
         </div>
     </div>

@@ -13,14 +13,14 @@
     <header class="mb-auto container mt-3">
         <div class=" justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}" );'>
             <div class="d-flex justify-content-end">
-                <div class="col-md-1 mt-2 bg-white text-center p-2">
-                    {% if app.user %}
+                {% if app.user %}
+                    <div class="col-md-1 mt-2 bg-white text-center p-2">
                         <div>
                             <small class="p-3 icon"><a href="{{ path('edit',{'slug':trick.slug}) }}" ><i class="fa-solid fa-pencil"></i></a></small>
                             <small class="p-1 icon"><a href="#" class="link"><i class="fa-solid fa-trash"></i></a></small>
                         </div>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </div>
             <div class="row rounded text-center mt-5">
                 <div class="col-md-12 mt-5">
@@ -73,16 +73,16 @@
             </div>
 
             {% if app.user and app.user.isVerified == true %}
-                {{ form_start(CommentCreateForm) }}
+                {{ form_start(CommentTypeForm) }}
                     <div class="mt-5 row p-4">
                         <div class="col-12 col-md-8">
-                            {{ form_row(CommentCreateForm.content) }}
+                            {{ form_row(CommentTypeForm.content) }}
                         </div>
                         <div class="col-12 col-md-4">
                             <button type="submit" class="btn btn-lg btn-primary mt-3">Leave a comment</button>
                         </div>
                     </div>
-                {{ form_end(CommentCreateForm) }}
+                {{ form_end(CommentTypeForm) }}
             {% endif %}
             <div class="mt-3" id="comments">
                 {% include 'comments/list.html.twig' %}
