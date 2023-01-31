@@ -4,15 +4,25 @@
 
 {% block body %}
 
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+
     <header class="mb-auto">
-        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center header-image">
-            <div class="col-md-5 p-lg-5 mx-auto my-5 header-block">
-              	<h1 class="display-1 fw-normal mt-3 text-primary">SNOWTRICKS</h1>
-              	<p class="lead fw-normal text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-            </div>
-            <div class="product-device shadow-sm d-none d-md-block"></div>
-            <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
-        </div>
+		<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center header-image">
+			<div class="col-md-5 p-lg-5 mx-auto my-5 header-block">
+				<h1 class="display-1 fw-normal mt-3 text-primary">SNOWTRICKS</h1>
+				<p class="lead fw-normal text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+			</div>
+			<div class="product-device shadow-sm d-none d-md-block"></div>
+			<div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+			<div class="text-end align-bottom">
+				<a href="#custom-cards" class="fw-bold fs-1"><i class="fa-solid fa-down-long"></i></a>
+			</div>
+		</div>
+		
     </header>
 
 	<main class="container">
@@ -29,7 +39,10 @@
 				  <span class="sr-only">Loading...</span>
 				</div>
 			</div>
-    	</div>	
+    	</div>
+		<span class="arrow-up-btn">
+			<a href="#nav" class="fw-bold fs-1"><i class="fa-solid fa-up-long"></i></a>	
+		</span>
 	</main>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
@@ -52,7 +65,11 @@ function loadMore() {
 			$('#loader').hide();
 			$('#loadMore').show();
 
-			if(response.length == 1){
+			if(count == 15){
+				$('.arrow-up-btn').show();
+			}
+
+			if(response.length <= 1){
 				$('#loadMore').hide();
 				$('#loader').hide();
 				$('#loaderMessage').show();

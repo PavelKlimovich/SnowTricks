@@ -1,8 +1,16 @@
 {% for comment in comments %}
     <div class="card m-2">
         <div class="card-body">
-            <h5 class="card-title">{{ comment.user.username }}</h5>
-            <p class="card-text">{{ comment.content }}</p>
+            <div class="row">
+                <div class="col-2">
+                    <span class="badge rounded-pill bg-dark">{{ comment.createdAt|date('d-m-Y') }}</span>
+                    <img src="{{ asset(comment.user.image) }}" width="75">
+                </div>
+                <div class="col-10">
+                    <h5 class="card-title mt-2">{{ comment.user.username }}</h5>
+                    <p class="card-text mt-4">{{ comment.content }}</p>
+                </div>
+            </div>
         </div>
     </div>
 {% endfor %}

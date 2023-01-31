@@ -3,16 +3,22 @@
 {% block title %}SnowTricks{% endblock %}
 
 {% block body %}
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
                    
-{{ form_start(TrickEditForm) }}
+{{ form_start(TrickTypeForm) }}
     <header class="mb-auto container mt-3">
-        <div class="justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}");'>
+        <div id="immm" class="justify-content-center text-bg-dark header-trick" style='background-image: url("{{ asset('/uploads/'~trick.image) }}");'>
             <div class="d-flex justify-content-end">
                 <div class="col-md-1 mt-2 bg-white text-center p-2">
                     {% if app.user %}
                         <div>
-                            <small class="p-3 icon"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-pencil"></i></a></small>
-                            <small class="p-1 icon"><a href="{{ path('annonces_delete_image', {id: trick.id})}}" data-delete data-token="{{ csrf_token('delete' ~ trick.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                            <small class="p-3 icon"><a href="" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-pencil"></i></a></small>
+                            <small class="p-1 icon"><a href="{{ path('delete', {id: trick.id})}}" data-delete data-token="{{ csrf_token('delete' ~ trick.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
                         </div>
                     {% endif %}
                 </div>
@@ -29,7 +35,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{ form_row(TrickEditForm.image) }}
+                    {{ form_row(TrickTypeForm.image) }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -42,14 +48,18 @@
 	<main class="container">
 		<div class="container px-4 py-5" id="custom-cards">
             <div class="row">
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Add new image</button>
                     <div class="row" id="images">
                         {% for image in trick.images %}
                             {% if image.url %}
-                                <div class="col-6 p-2">
+                                <div class="col-12 col-md-6 p-2">
                                     <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style='background-image: url("{{ asset('/uploads/'~image.url) }}" );'>
                                         <div class="d-flex justify-content-end flex-column p-2 pb-3 text-white text-shadow-1"></div>
+                                    </div>
+                                    <div class="text-end m-2">
+                                        <small class="p-3 icon"><a href="" onclick="addImageId('{{ image.id }}','{{ trick.id }}')" data-bs-toggle="modal" data-bs-target="#imageUploadModal"><i class="fa-solid fa-pencil"></i></a></small>
+                                        <small class="p-1 icon"><a href="{{ path('image_delete', {image: image.id})}}" data-delete data-token="{{ csrf_token('delete' ~ image.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
                                     </div>
                                 </div>
                             {% endif %}
@@ -57,13 +67,17 @@
                         {% include 'media/image_list.html.twig' %}
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#videoModal">Add New Video</button>
                     <div class="row" id="videos">
                         {% for video in trick.videos %}
                             {% if video.url %}
-                                <div class="col-6 p-2">
+                                <div class="col-12 col-md-6 p-2">
                                     <iframe width="100%" height="250"  src="{{ video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    <div class="text-end">
+                                        <small class="p-3 icon"><a href="" onclick="addVideoId('{{ video.id }}','{{ trick.id }}')"  data-bs-toggle="modal" data-bs-target="#videoUploadModal"><i class="fa-solid fa-pencil"></i></a></small>
+                                        <small class="p-1 icon"><a href="{{ path('video_delete', {video: video.id})}}" data-delete data-token="{{ csrf_token('delete' ~ video.id )}}" class="link"><i class="fa-solid fa-trash"></i></a></small>
+                                    </div>
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -75,16 +89,16 @@
             <div class="row py-5">
                 <div class="col-12">
                     <div class="form-signin mt-5">
-                        {{ form_row(TrickEditForm.name) }}
-                        {{ form_row(TrickEditForm.content) }}
-                        {{ form_row(TrickEditForm.category) }}
+                        {{ form_row(TrickTypeForm.name) }}
+                        {{ form_row(TrickTypeForm.content) }}
+                        {{ form_row(TrickTypeForm.category) }}
                     </div>
                     <button type="submit" class="btn btn-lg btn-primary btn-block mt-4">Save</button>
                 </div>
             </div>
         </div>  
 	</main>
-    {{ form_end(TrickEditForm) }}
+    {{ form_end(TrickTypeForm) }}
 
     <!-- Image Modal -->
     <div class="modal fade" id="imageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -108,6 +122,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Update Modal -->
+    <div class="modal fade" id="imageUploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Update Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{ form_start(ImageTypeForm) }}
+                <div class="modal-body">
+                    <div class="col-12">
+                        {{ form_row(ImageTypeForm.image) }}
+                        {{ form_row(ImageTypeForm.hidden) }}
+                        {{ form_row(ImageTypeForm.trick_id) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                </div>
+                {{ form_end(ImageTypeForm) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Update Modal -->
+    <div class="modal fade" id="videoUploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Update Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{ form_start(VideoTypeForm) }}
+                <div class="modal-body">
+                    <div class="col-12">
+                        {{ form_row(VideoTypeForm.url) }}
+                        {{ form_row(VideoTypeForm.video_id) }}
+                        {{ form_row(VideoTypeForm.trick_id) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                </div>
+                {{ form_end(VideoTypeForm) }}
+            </div>
+        </div>
+    </div>
     
     <!-- Video Modal -->
     <div class="modal fade" id="videoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -120,7 +184,8 @@
                 <div class="modal-body">
                     <form name="videoInput" method="post" action>
                         <div class="col-12">
-                            <input type="text" id="videoInput" name="videoInput" >
+                            <label for="">Link embed </label>
+                            <input type="text" id="videoInput" name="videoInput" placeholder="youtube.com/embed/...">
                         </div>
                     </form>
                 </div>
@@ -137,14 +202,13 @@
     function createThumbnail(sFile) {
         var oReader = new FileReader();
         oReader.addEventListener('load', function() {
-            //document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
+            document.getElementById('immm').style.backgroundImage ="url("+this.result+")" ;
         }, false);
 
         oReader.readAsDataURL(sFile);
     }
 
     function changeInputFil(oEvent){
-        
         var oInputFile = oEvent.currentTarget,
             sName = oInputFile.name,
             aFiles = oInputFile.files,
@@ -168,32 +232,14 @@
         }
     });
 
-    window.onload = () => {
-        let links = document.querySelectorAll("[data-delete]")
+    function addImageId(image_id, trick_id) {
+        document.getElementById('image_edit_form_hidden').value = image_id;
+        document.getElementById('image_edit_form_trick_id').value = trick_id;
+    }
 
-        for(link of links){
-            link.addEventListener("click", function(e){
-                e.preventDefault()
-
-                if(confirm("Voulez-vous supprimer cette image ?")){
-                    fetch(this.getAttribute("href"), {
-                        method: "DELETE",
-                        headers: {
-                            "X-Requested-With": "XMLHttpRequest",
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({"_token": this.dataset.token})
-                    }).then(
-                        response => response.json()
-                    ).then(data => {
-                        if(data.success)
-                            this.parentElement.remove()
-                        else
-                            alert(data.error)
-                    }).catch(e => alert(e))
-                }
-            })
-        }
+    function addVideoId(video_id, trick_id) {
+        document.getElementById('video_edit_form_video_id').value = video_id;
+        document.getElementById('video_edit_form_trick_id').value = trick_id;
     }
 
     function saveImage() {
