@@ -8,27 +8,24 @@ use App\Form\ImageEditForm;
 use App\Form\TrickEditForm;
 use App\Form\VideoEditForm;
 use App\Form\TrickCreateForm;
-use App\Services\TrickService;
 use App\Form\CommentCreateForm;
 use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
 use App\Services\HelperStringService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TrickController extends AbstractController
 {
-    private TrickService $trickService;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(TrickService $trickService, private ManagerRegistry $doctrine) 
+    public function __construct(EntityManagerInterface $entityManager) 
     {
-        $this->trickService = $trickService;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/', name: 'index')]
@@ -42,14 +39,13 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, Security $security): Response
+    public function create(Request $request, Security $security): Response
     {
         $trick = new Trick();
         $form = $this->createForm(TrickCreateForm::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-         
             $image = $form->get('image')->getData();
 
             if (isset($image)) {
@@ -64,8 +60,8 @@ class TrickController extends AbstractController
                 ->setSlug(HelperStringService::slugify($trick->getName()))
                 ->setCreatedAt(new \DateTime());
                 
-           $entityManager->persist($trick);
-           $entityManager->flush();
+           $this->entityManager->persist($trick);
+           $this->entityManager->flush();
            $this->addFlash('success', 'Trick Created !');
 
            return $this->redirectToRoute('edit',array('slug' => $trick->getSlug()));
@@ -76,8 +72,9 @@ class TrickController extends AbstractController
         ]);
     }
 
+    //  requirements: ['slug' => '[a-zA-Z1-9\-_\/]+']
     #[Route('/trick/{slug}', name: 'show')]
-    public function show(Request $request, Trick $trick, EntityManagerInterface $entityManager, CommentRepository $repo, Security $security): Response
+    public function show(Request $request, Trick $trick, CommentRepository $repo, Security $security): Response
     {
         $newComment = new Comment();
         $form = $this->createForm(CommentCreateForm::class, $newComment);
@@ -88,8 +85,8 @@ class TrickController extends AbstractController
                 ->setTrick($trick)
                 ->setCreatedAt(new \DateTime());
 
-            $entityManager->persist($newComment);
-            $entityManager->flush();
+            $this->entityManager->persist($newComment);
+            $this->entityManager->flush();
         }
 
         $comments = $repo->getFirstComments($trick->getId());
@@ -102,7 +99,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/edit/{slug}', name: 'edit')]
-    public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager, Security $security): Response
+    public function edit(Request $request, Trick $trick, Security $security): Response
     {
         $form = $this->createForm(TrickEditForm::class, $trick);
         $imageForm = $this->createForm(ImageEditForm::class, null, [
@@ -116,7 +113,6 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
             $image = $form->get('image')->getData();
 
             if (isset($image)) {
@@ -130,8 +126,8 @@ class TrickController extends AbstractController
                 ->setUser($security->getUser())
                 ->setCreatedAt(new \DateTime());
                 
-           $entityManager->persist($trick);
-           $entityManager->flush();
+           $this->entityManager->persist($trick);
+           $this->entityManager->flush();
         }
 
         return $this->render('edit.html.twig', [
@@ -143,17 +139,18 @@ class TrickController extends AbstractController
     }
 
     #[Route('/delete/trick/{id}', name: 'delete')]
-    public function deleteImage(Trick $trick, EntityManagerInterface $entityManager)
+    public function deleteImage(Trick $trick)
     {
-        $entityManager->remove($trick);
-        $entityManager->flush();
+        $this->entityManager->remove($trick);
+        $this->entityManager->flush();
         $this->addFlash('success', 'Trick Deleted !');
 
         return $this->redirectToRoute('index');
     }
 
     #[Route('/load/trick/{limit}', name: 'load_tricks')]
-    public function loadTricks($limit, TrickRepository $repo){
+    public function loadTricks($limit, TrickRepository $repo)
+    {
         $tricks = $repo->getTricks($limit);
         $htmlToRender = $this->renderView('tricks/list.html.twig', array(
             'tricks' => $tricks

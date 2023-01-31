@@ -13,9 +13,22 @@ class CategoryFixture extends Fixture
     {
         $faker = Factory::create();
 
+        $categories = [
+            'La manière de rideur',
+            'Les grabs',
+            'Les rotations',
+            'Les flips',
+            'Les rotations désaxées',
+            'Les slides',
+            'Les one foot tricks',
+            'Old school',
+            'New school',
+            'Shred',
+        ];
+
         for ($i=0; $i < 10; $i++) { 
             $category = new Category();
-            $category->setName($faker->paragraph($nbSentences = 1, $variableNbSentences = true));
+            $category->setName($categories[$i]);
 
             $manager->persist($category);
             $manager->flush();
