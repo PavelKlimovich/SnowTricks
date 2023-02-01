@@ -42,10 +42,10 @@ class Trick
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Image::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Image::class, cascade: ['remove','persist'])]
     private Collection $images;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class, cascade: ['remove','persist'])]
     private Collection $videos;
 
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Comment::class, cascade: ['remove'])]
