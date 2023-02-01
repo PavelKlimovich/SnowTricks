@@ -24,7 +24,7 @@ class UserFixture extends Fixture
             ->setEmail("pavel@kernl.fr")
             ->setPassword($hashedPassword)
             ->setRoles(['ROLE_USER'])
-            ->setImage('profils/1.jpg')
+            ->setImage('uploads/profils/1.jpg')
             ->setIsVerified(1)
             ->setCreatedAt(new \DateTime());
             

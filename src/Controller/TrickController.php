@@ -71,8 +71,8 @@ class TrickController extends AbstractController
         ]);
     }
 
-    //  requirements: ['slug' => '[a-zA-Z1-9\-_\/]+']
-    #[Route('/trick/{slug}', name: 'show')]
+
+    #[Route('/trick/{slug}', name: 'show', requirements: ['slug' => '[a-zA-Z0-9\-_\/]+'])]
     public function show(Request $request, Trick $trick, CommentRepository $repo, Security $security): Response
     {
         $newComment = new Comment();
@@ -97,7 +97,7 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/trick/edit/{slug}', name: 'edit')]
+    #[Route('/trick/edit/{slug}', name: 'edit', requirements: ['slug' => '[a-zA-Z0-9\-_\/]+'])]
     public function edit(Request $request, Trick $trick, Security $security): Response
     {
         $form = $this->createForm(TrickTypeForm::class, $trick);
