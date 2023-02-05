@@ -37,6 +37,31 @@ class TrickController extends AbstractController
         ]);
     }
 
+    #[Route('/trick/show/{slug}', name: 'show', requirements: ['slug' => '[a-zA-Z0-9\-_\/]+'])]
+    public function show(Request $request, Trick $trick, CommentRepository $repo, Security $security): Response
+    {
+        $newComment = new Comment();
+        $form = $this->createForm(CommentTypeForm::class, $newComment);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newComment->setUser($security->getUser())
+                ->setTrick($trick)
+                ->setCreatedAt(new \DateTime());
+
+            $this->entityManager->persist($newComment);
+            $this->entityManager->flush();
+        }
+
+        $comments = $repo->getFirstComments($trick->getId());
+
+        return $this->render('show.html.twig', [
+            'trick' => $trick,
+            'comments' => $comments,
+            'CommentTypeForm' => $form->createView(),
+        ]);
+    }
+
     #[Route('/trick/create', name: 'create')]
     public function create(Request $request, Security $security): Response
     {
@@ -72,31 +97,7 @@ class TrickController extends AbstractController
     }
 
 
-    #[Route('/trick/{slug}', name: 'show', requirements: ['slug' => '[a-zA-Z0-9\-_\/]+'])]
-    public function show(Request $request, Trick $trick, CommentRepository $repo, Security $security): Response
-    {
-        $newComment = new Comment();
-        $form = $this->createForm(CommentTypeForm::class, $newComment);
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $newComment->setUser($security->getUser())
-                ->setTrick($trick)
-                ->setCreatedAt(new \DateTime());
-
-            $this->entityManager->persist($newComment);
-            $this->entityManager->flush();
-        }
-
-        $comments = $repo->getFirstComments($trick->getId());
-
-        return $this->render('show.html.twig', [
-            'trick' => $trick,
-            'comments' => $comments,
-            'CommentTypeForm' => $form->createView(),
-        ]);
-    }
-
+    
     #[Route('/trick/edit/{slug}', name: 'edit', requirements: ['slug' => '[a-zA-Z0-9\-_\/]+'])]
     public function edit(Request $request, Trick $trick, Security $security): Response
     {
@@ -127,8 +128,8 @@ class TrickController extends AbstractController
                 
            $this->entityManager->persist($trick);
            $this->entityManager->flush();
+           $this->addFlash('success', 'Trick Modified !');
         }
-        $this->addFlash('success', 'Trick Modified !');
 
         return $this->render('edit.html.twig', [
             'trick' => $trick,

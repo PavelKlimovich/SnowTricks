@@ -62,8 +62,8 @@ class CommentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->select('c')  
             ->where('c.trick = '.$trick)
-                ->orderBy('c.id', 'ASC')
-                ->setMaxResults(5)
+                ->orderBy('c.id', 'DESC')
+                ->setMaxResults(10)
                 ->setFirstResult(0) 
             ->getQuery()
             ->getResult();

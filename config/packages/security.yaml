@@ -38,7 +38,15 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: /trick/create, roles: ROLE_USER }
+         - { path: /trick/edit, roles: ROLE_USER }
+         - { path: ^/delete/trick, roles: ROLE_USER }
+         - { path: ^/videoupload, roles: ROLE_USER }
+         - { path: ^/video_delete, roles: ROLE_USER }
+         - { path: ^/video_update, roles: ROLE_USER }
+         - { path: ^/fileupload, roles: ROLE_USER }
+         - { path: ^/image_delete, roles: ROLE_USER }
+         - { path: ^/image_update, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

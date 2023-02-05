@@ -33,7 +33,7 @@
                         </label>
                     </div>
                     <div class="form-label-group mb-3">
-                         <a class="" href="{{ path('reset_password') }}">Forgot Password ?</a>
+                         <a class="" href="{{ path('app_forgot_password_request') }}">Forgot Password ?</a>
                     </div>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" >
                     <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
