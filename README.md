@@ -34,3 +34,7 @@
 ```
     php bin/console doctrine:fixtures:load
 ```
+
+---------------------------------------------------------
+User: admin@gmail.com
+Password: azerty123
