@@ -21,7 +21,7 @@ class UserFixture extends Fixture
         $plaintextPassword = 'password';
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plaintextPassword);
         $user->setUsername("pklim")
-            ->setEmail("pavel@kernl.fr")
+            ->setEmail("admin@gmail.com")
             ->setPassword($hashedPassword)
             ->setRoles(['ROLE_USER'])
             ->setImage('uploads/profils/1.jpg')
