@@ -36,5 +36,6 @@
 ```
 
 ---------------------------------------------------------
-User: admin@gmail.com
-Password: azerty123
+```
+User: admin@gmail.com  Password: azerty123
+```
