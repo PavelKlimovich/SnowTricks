@@ -15,6 +15,8 @@ $theme-colors: (
 
 body{
   font-family: 'Poppins', sans-serif;
+  position: relative;
+  min-height: 100vh;
 }
 
 .header-image{
@@ -87,7 +89,7 @@ body{
 
 footer{
   bottom: 0;
-  position: absolute;
+  position: inherit;
 }
 
 @media (min-width: 300px) and (max-width: 640px) {
