@@ -39,6 +39,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
             $user->setImage('uploads/profils/'.random_int(2, 9).'.jpg');
+            $user->setRoles(['ROLE_USER']);
             $user->setCreatedAt(new \DateTime());
             
             $entityManager->persist($user);

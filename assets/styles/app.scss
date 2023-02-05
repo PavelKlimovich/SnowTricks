@@ -85,6 +85,11 @@ body{
   display: none;
 }
 
+footer{
+  bottom: 0;
+  position: absolute;
+}
+
 @media (min-width: 300px) and (max-width: 640px) {
   #mobile-nav{
     display: flex;
