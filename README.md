@@ -3,7 +3,7 @@
 
 ## Installation
 
-1. Configurez vos variables d'environnement tel que la connexion à la base de données ou votre serveur SMTP ou adresse mail dans le fichier `.env.local` qui devra être crée à la racine du projet en réalisant une copie du fichier `.env`.
+1. Configurez vos variables d'environnement tel que la connexion à la base de données ou votre serveur SMTP ou adresse mail dans le fichier `.env.local` qui devra être crée à la racine du projet en réalisant une copie du fichier `.env.example`.
 
 2. Téléchargez et installez les dépendances back-end du projet avec [Composer](https://getcomposer.org/download/) :
 ```
