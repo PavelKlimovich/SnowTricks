@@ -18,7 +18,7 @@ class UserFixture extends Fixture
     public function load(ObjectManager $manager): void
     {
         $user = new User();
-        $plaintextPassword = 'password';
+        $plaintextPassword = 'azerty123';
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plaintextPassword);
         $user->setUsername("pklim")
             ->setEmail("admin@gmail.com")
